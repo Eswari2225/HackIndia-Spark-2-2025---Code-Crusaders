@@ -1,0 +1,72 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+  <meta charset="UTF-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1.0">
+  <title>Guardian Eyes - Dashboard</title>
+  <script src="https://cdn.jsdelivr.net/npm/chart.js"></script>
+  <script src="https://cdn.tailwindcss.com"></script>
+</head>
+<body class="bg-gray-100 p-4">
+  <div class="max-w-6xl mx-auto bg-white p-6 rounded-lg shadow-lg">
+    <h1 class="text-2xl font-bold text-center mb-4">Guardian Eyes - PPE Compliance Dashboard</h1>
+    
+    <div class="flex justify-center mb-6">
+      <img class="border rounded-lg shadow-md" src="{{ url_for('video_feed') }}" alt="Live Video Feed">
+    </div>
+
+    <!-- Real-Time Alerts -->
+    <div class="mb-6">
+      <h2 class="text-lg font-semibold">Real-Time Alerts</h2>
+      <div id="alerts" class="p-4 bg-red-100 text-red-700 rounded-lg shadow-md">
+        No alerts detected.
+      </div>
+    </div>
+
+    <!-- Compliance Report -->
+    <div class="mb-6">
+      <h2 class="text-lg font-semibold">Compliance Report</h2>
+      <canvas id="complianceChart"></canvas>
+    </div>
+  </div>
+
+  <script>
+    const ctx = document.getElementById('complianceChart').getContext('2d');
+    const complianceChart = new Chart(ctx, {
+      type: 'pie',
+      data: {
+        labels: ['Helmet', 'Vest', 'Mask'],
+        datasets: [{
+          label: 'Number of People',
+          data: [0, 0, 0],
+          backgroundColor: ['#36a2eb', '#ff6384', '#ffce56'],
+        }]
+      }
+    });
+
+    function updateDashboard() {
+      fetch('/compliance_data')
+        .then(response => response.json())
+        .then(data => {
+          const totalWorkers = data.total_workers || 0;
+          const helmetCount = data.helmet || 0;
+          const vestCount = data.vest || 0;
+          const maskCount = data.mask || 0;
+
+          complianceChart.data.datasets[0].data = [helmetCount, vestCount, maskCount];
+          complianceChart.update();
+
+          const alertsDiv = document.getElementById('alerts');
+          alertsDiv.innerHTML = `
+            <p class="font-bold">Total Workers: ${totalWorkers}</p>
+            <p class="font-bold">Helmet Compliance: ${helmetCount}</p>
+            <p class="font-bold">Vest Compliance: ${vestCount}</p>
+            <p class="font-bold">Mask Compliance: ${maskCount}</p>
+          `;
+        });
+    }
+
+    setInterval(updateDashboard, 2000);
+  </script>
+</body>
+</html>
