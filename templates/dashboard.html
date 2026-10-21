@@ -11,21 +11,26 @@
   <div class="max-w-6xl mx-auto bg-white p-6 rounded-lg shadow-lg">
     <h1 class="text-2xl font-bold text-center mb-4">Guardian Eyes - PPE Compliance Dashboard</h1>
     
+    <!-- Live Video Display -->
     <div class="flex justify-center mb-6">
-      <img class="border rounded-lg shadow-md" src="{{ url_for('video_feed') }}" alt="Live Video Feed">
+      <img id="yoloFeed" class="border rounded-lg shadow-md max-w-full h-auto" alt="Live Video Feed (Waiting for camera...)">
     </div>
+
+    <!-- Hidden Video & Canvas for Web Browser Camera Streaming -->
+    <video id="webcam" autoplay playsinline style="display: none;"></video>
+    <canvas id="canvas" width="640" height="480" style="display: none;"></canvas>
 
     <!-- Real-Time Alerts -->
     <div class="mb-6">
-      <h2 class="text-lg font-semibold">Real-Time Alerts</h2>
+      <h2 class="text-lg font-semibold mb-2">Real-Time Alerts</h2>
       <div id="alerts" class="p-4 bg-red-100 text-red-700 rounded-lg shadow-md">
-        No alerts detected.
+        Initializing webcam feed...
       </div>
     </div>
 
     <!-- Compliance Report -->
     <div class="mb-6">
-      <h2 class="text-lg font-semibold">Compliance Report</h2>
+      <h2 class="text-lg font-semibold mb-2">Compliance Report</h2>
       <canvas id="complianceChart"></canvas>
     </div>
   </div>
@@ -44,29 +49,57 @@
       }
     });
 
-    function updateDashboard() {
-      fetch('/compliance_data')
-        .then(response => response.json())
+    const video = document.getElementById('webcam');
+    const canvas = document.getElementById('canvas');
+    const context = canvas.getContext('2d');
+    const yoloFeed = document.getElementById('yoloFeed');
+
+    // Access browser webcam
+    navigator.mediaDevices.getUserMedia({ video: { width: 640, height: 480 } })
+      .then((stream) => {
+        video.srcObject = stream;
+        video.play();
+        setInterval(sendFrameToServer, 150); // Capture ~6-7 frames per second
+      })
+      .catch((err) => {
+        console.error("Webcam access denied or unavailable:", err);
+        document.getElementById('alerts').innerText = "Camera access error: Please enable webcam permissions.";
+      });
+
+    // Send base64 frame to Flask backend
+    function sendFrameToServer() {
+      if (video.readyState === video.HAVE_ENOUGH_DATA) {
+        context.drawImage(video, 0, 0, canvas.width, canvas.height);
+        const dataUrl = canvas.toDataURL('image/jpeg', 0.6);
+
+        fetch('/process_frame', {
+          method: 'POST',
+          headers: { 'Content-Type': 'application/json' },
+          body: JSON.stringify({ image: dataUrl })
+        })
+        .then(res => res.json())
         .then(data => {
-          const totalWorkers = data.total_workers || 0;
-          const helmetCount = data.helmet || 0;
-          const vestCount = data.vest || 0;
-          const maskCount = data.mask || 0;
+          if (data.processed_image) {
+            yoloFeed.src = data.processed_image;
+          }
 
-          complianceChart.data.datasets[0].data = [helmetCount, vestCount, maskCount];
-          complianceChart.update();
+          if (data.compliance_data) {
+            const comp = data.compliance_data;
+            complianceChart.data.datasets[0].data = [comp.helmet, comp.vest, comp.mask];
+            complianceChart.update();
 
-          const alertsDiv = document.getElementById('alerts');
-          alertsDiv.innerHTML = `
-            <p class="font-bold">Total Workers: ${totalWorkers}</p>
-            <p class="font-bold">Helmet Compliance: ${helmetCount}</p>
-            <p class="font-bold">Vest Compliance: ${vestCount}</p>
-            <p class="font-bold">Mask Compliance: ${maskCount}</p>
-          `;
-        });
+            const alertsDiv = document.getElementById('alerts');
+            alertsDiv.innerHTML = `
+              <p class="font-bold">Total Workers: ${comp.total_workers}</p>
+              <p class="font-bold">Helmet Compliance: ${comp.helmet}</p>
+              <p class="font-bold">Vest Compliance: ${comp.vest}</p>
+              <p class="font-bold">Mask Compliance: ${comp.mask}</p>
+            `;
+          }
+        })
+        .catch(err => console.error("Error processing frame:", err));
+      }
     }
-
-    setInterval(updateDashboard, 2000);
   </script>
 </body>
 </html>
