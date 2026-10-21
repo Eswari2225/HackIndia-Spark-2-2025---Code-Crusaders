@@ -1,30 +1,26 @@
-from flask import Flask, jsonify, render_template, Response
-import cv2
-from ultralytics import YOLO
-import threading
+import base64
+import os
 import smtplib
-from email.mime.text import MIMEText
+import threading
 from email.mime.multipart import MIMEMultipart
+from email.mime.text import MIMEText
+
+import cv2
+from flask import Flask, jsonify, render_template, request
+import numpy as np
 import requests
+from ultralytics import YOLO
 
 app = Flask(__name__)
 
 # Load the pre-trained YOLOv8 model
-model = YOLO("yolov8n.pt")  # Replace with your custom-trained model if available
+model = YOLO("yolov8n.pt")
 
-# Global variable to store compliance data
-compliance_data = {
-    "helmet": 0,
-    "vest": 0,
-    "mask": 0,
-    "total_workers": 0
-}
-
-# Function to send email alerts
+# Function to send email alerts in a separate background thread
 def send_email_alert(subject, message):
     sender_email = "eswarigeetha2005@gmail.com"
     receiver_email = "aruldassdharsh@gmail.com"
-    password = "Eswari2005"
+    password = os.getenv("EMAIL_PASSWORD", "Eswari2005")
 
     msg = MIMEMultipart()
     msg['From'] = sender_email
@@ -42,38 +38,23 @@ def send_email_alert(subject, message):
     except Exception as e:
         print(f"Failed to send email: {e}")
 
-# Function to send Telegram alerts
-def send_telegram_alert(message):
-    bot_token = "your_bot_token"
-    chat_id = "your_chat_id"
+@app.route('/')
+def dashboard():
+    return render_template('dashboard.html')
 
-    url = f"https://api.telegram.org/bot{bot_token}/sendMessage"
-    payload = {
-        "chat_id": chat_id,
-        "text": message
-    }
+@app.route('/process_frame', methods=['POST'])
+def process_frame():
     try:
-        response = requests.post(url, json=payload)
-        if response.status_code == 200:
-            print("Telegram alert sent successfully!")
-        else:
-            print(f"Failed to send Telegram alert: {response.text}")
-    except Exception as e:
-        print(f"Failed to send Telegram alert: {e}")
+        data = request.get_json()
+        image_data = data['image'].split(',')[1]
+        
+        # Decode base64 image string to OpenCV image array
+        nparr = np.frombuffer(base64.b64decode(image_data), np.uint8)
+        frame = cv2.imdecode(nparr, cv2.IMREAD_COLOR)
 
-# Function to generate video frames
-def generate_frames():
-    cap = cv2.VideoCapture(0)  # Use 0 for webcam, or provide a video file path
-
-    while cap.isOpened():
-        ret, frame = cap.read()
-        if not ret:
-            break
-
-        # Perform object detection using YOLOv8
+        # Run inference using YOLO model
         results = model(frame)
 
-        # Reset compliance data for each frame
         compliance_data = {
             "helmet": 0,
             "vest": 0,
@@ -81,14 +62,21 @@ def generate_frames():
             "total_workers": 0
         }
 
-        # Extract detection results
+        # Process detections
         for result in results:
             boxes = result.boxes
             for box in boxes:
                 class_id = int(box.cls)
                 label = model.names[class_id]
+                confidence = float(box.conf)
+                x1, y1, x2, y2 = map(int, box.xyxy[0])
 
-                # Update compliance data based on detected labels
+                # Draw bounding box and detection text on the frame
+                cv2.rectangle(frame, (x1, y1), (x2, y2), (0, 255, 0), 2)
+                cv2.putText(frame, f"{label} {confidence:.2f}", (x1, max(y1 - 10, 20)),
+                            cv2.FONT_HERSHEY_SIMPLEX, 0.6, (0, 255, 0), 2)
+
+                # Update compliance stats
                 if label == "person":
                     compliance_data["total_workers"] += 1
                 elif label == "helmet":
@@ -98,47 +86,25 @@ def generate_frames():
                 elif label == "mask":
                     compliance_data["mask"] += 1
 
-        # Send alert if workers are not wearing PPE
+        # Check for non-compliance and trigger email alert in a non-blocking background thread
         if compliance_data["total_workers"] > 0:
-            if compliance_data["helmet"] < compliance_data["total_workers"] or \
-               compliance_data["vest"] < compliance_data["total_workers"] or \
-               compliance_data["mask"] < compliance_data["total_workers"]:
+            if (compliance_data["helmet"] < compliance_data["total_workers"] or
+                compliance_data["vest"] < compliance_data["total_workers"] or
+                compliance_data["mask"] < compliance_data["total_workers"]):
                 alert_message = "ALERT: Workers detected without proper PPE!"
-                send_email_alert("PPE Compliance Alert", alert_message)  # Use email
-                # send_telegram_alert(alert_message)  # Use Telegram
+                threading.Thread(target=send_email_alert, args=("PPE Compliance Alert", alert_message)).start()
 
-        # Draw bounding boxes and labels on the frame
-        for box in boxes:
-            x1, y1, x2, y2 = map(int, box.xyxy[0])
-            label = model.names[int(box.cls)]
-            confidence = float(box.conf)
-            cv2.rectangle(frame, (x1, y1), (x2, y2), (0, 255, 0), 2)
-            cv2.putText(frame, f"{label} {confidence:.2f}", (x1, y1 - 10), cv2.FONT_HERSHEY_SIMPLEX, 0.9, (0, 255, 0), 2)
+        # Encode annotated image back to base64
+        _, buffer = cv2.imencode('.jpg', frame)
+        encoded_image = base64.b64encode(buffer).decode('utf-8')
 
-        # Convert the frame to JPEG format
-        ret, buffer = cv2.imencode('.jpg', frame)
-        frame = buffer.tobytes()
+        return jsonify({
+            "processed_image": f"data:image/jpeg;base64,{encoded_image}",
+            "compliance_data": compliance_data
+        })
 
-        # Yield the frame in byte format
-        yield (b'--frame\r\n'
-               b'Content-Type: image/jpeg\r\n\r\n' + frame + b'\r\n')
-
-    cap.release()
-
-# Route to stream video
-@app.route('/video_feed')
-def video_feed():
-    return Response(generate_frames(), mimetype='multipart/x-mixed-replace; boundary=frame')
-
-# API endpoint to get compliance data
-@app.route('/compliance_data')
-def get_compliance_data():
-    return jsonify(compliance_data)
-
-# Route to render the dashboard
-@app.route('/')
-def dashboard():
-    return render_template('dashboard.html')
+    except Exception as e:
+        return jsonify({"error": str(e)}), 400
 
 if __name__ == '__main__':
-    app.run(debug=True)
+    app.run(host='0.0.0.0', port=10000, debug=True)
