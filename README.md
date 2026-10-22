@@ -1,17 +1,16 @@
 # 🦺 Guardian Eyes — AI-Powered Safety Monitoring System
 
-\<div align="center">
+<div align="center">
 
-
-
-\
-
+![Python](https://img.shields.io/badge/Python-3776AB?style=for-the-badge&logo=python&logoColor=white)
+![YOLOv8](https://img.shields.io/badge/YOLOv8-Computer%20Vision-purple?style=for-the-badge)
+![HackIndia](https://img.shields.io/badge/HackIndia-Spark%202%202025-blue?style=for-the-badge)
 
 **AI-powered safety monitoring using computer vision and object detection.**
 
 [View Repository](https://github.com/Eswari2225/HackIndia-Spark-2-2025---Code-Crusaders)
 
-\</div>
+</div>
 
 ---
 
@@ -19,73 +18,66 @@
 
 **Guardian Eyes** is a computer vision project developed by Team Code Crusaders for HackIndia Spark 2 – 2025.
 
-The project aims to support safety monitoring by using the YOLOv8 object detection model to analyze visual input and identify safety-related conditions. The application includes a Python backend, a web dashboard, and an alert module.
+The project uses the YOLOv8 object detection model to analyze visual input and identify safety-related conditions. It includes a Python application, a web dashboard, and an alert module.
 
 ## 🎯 Problem Statement
 
-Monitoring safety compliance manually can be time-consuming and difficult in environments where protective equipment is required.
-
-Guardian Eyes explores how computer vision can assist in detecting safety-related violations and help improve monitoring efficiency.
+Manual safety monitoring can be time-consuming in environments where protective equipment is required. Guardian Eyes explores how computer vision can help identify safety-related violations and support more efficient monitoring.
 
 ## 💡 Proposed Solution
 
-The system combines object detection with a web-based interface to present detection results and support alerts for identified violations.
+The system combines AI-based object detection with a web interface to display results and support alerts for detected violations.
 
 ## ✨ Key Features
 
-- 🤖 **AI-Based Detection:** Uses the YOLOv8 model for object detection.
-- 🦺 **Safety Monitoring:** Designed for safety-equipment monitoring, such as helmet detection, depending on the implemented model classes.
-- 🌐 **Web Dashboard:** Provides a browser-based interface using HTML templates.
-- 🚨 **Alert Module:** Includes Python alert functionality for safety-related events.
-- 🖼️ **Detection Outputs:** Includes sample output images showing project results.
-- ⚙️ **Python Backend:** Organizes application functionality through Python scripts.
+- 🤖 AI-based object detection using YOLOv8
+- 🦺 Safety-equipment monitoring, depending on the trained model classes
+- 🌐 Web dashboard interface
+- 🚨 Alert functionality
+- 🖼️ Sample detection output images
+- ⚙️ Python-based application
 
 ## 🛠️ Tech Stack
 
-- **Programming Language:** Python
-- **Computer Vision:** YOLOv8, Ultralytics
-- **Web Framework:** Flask, if used by `app.py`
-- **Frontend:** HTML, JavaScript, JSON
-- **Model Weights:** `yolov8n.pt`
-- **Dependency Management:** pip and `requirements.txt`
+- **Language:** Python
+- **AI & Computer Vision:** YOLOv8, Ultralytics
+- **Web Framework:** Flask, if configured in `app.py`
+- **Frontend:** HTML, JavaScript
+- **Data:** JSON
+- **Model:** `yolov8n.pt`
 
 ## 📂 Project Structure
 
 ```text
 HackIndia-Spark-2-2025---Code-Crusaders/
-│
 ├── templates/
 │   ├── dashboard.html
 │   ├── js.js
 │   └── json.json
-│
 ├── GE output.png
 ├── GE2output.png
 ├── GE3.png
-│
 ├── alert.py
 ├── app.py
-├── sample.py
 ├── requirements.txt
+├── sample.py
 ├── yolov8n.pt
 └── README.md
 ```
 
-### 📄 File Descriptions
+## 🖼️ Project Screenshots
 
-| File                       | Description                         |
-| -------------------------- | ----------------------------------- |
-| `app.py`                   | Main Python application entry point |
-| `alert.py`                 | Alert-related functionality         |
-| `sample.py`                | Sample or testing script            |
-| `requirements.txt`         | Python dependencies                 |
-| `yolov8n.pt`               | YOLOv8 nano model weights           |
-| `templates/dashboard.html` | Dashboard interface                 |
-| `templates/js.js`          | JavaScript functionality            |
-| `templates/json.json`      | JSON data or configuration          |
-| `GE output.png`            | Sample project output               |
-| `GE2output.png`            | Additional output image             |
-| `GE3.png`                  | Additional project image            |
+### Output 1
+
+![Guardian Eyes Output 1](GE%20output.png)
+
+### Output 2
+
+![Guardian Eyes Output 2](GE2output.png)
+
+### Output 3
+
+![Guardian Eyes Output 3](GE3.png)
 
 ## ⚙️ Installation and Setup
 
@@ -95,7 +87,7 @@ HackIndia-Spark-2-2025---Code-Crusaders/
 git clone https://github.com/Eswari2225/HackIndia-Spark-2-2025---Code-Crusaders.git
 ```
 
-### 2. Navigate to the project directory
+### 2. Open the project folder
 
 ```bash
 cd HackIndia-Spark-2-2025---Code-Crusaders
@@ -107,15 +99,13 @@ cd HackIndia-Spark-2-2025---Code-Crusaders
 python -m venv venv
 ```
 
-Activate it:
-
-**Windows**
+Activate it on Windows:
 
 ```bash
 venv\Scripts\activate
 ```
 
-**macOS / Linux**
+On macOS or Linux:
 
 ```bash
 source venv/bin/activate
@@ -127,48 +117,34 @@ source venv/bin/activate
 pip install -r requirements.txt
 ```
 
-If the Ultralytics package is not included in your requirements, install it with:
-
-```bash
-pip install ultralytics
-```
-
 ### 5. Run the application
 
 ```bash
 python app.py
 ```
 
-If `app.py` starts a Flask development server, open the local URL displayed in the terminal, commonly:
-
-```text
-http://127.0.0.1:5000/
-```
-
-*The exact setup and launch commands depend on how the application is implemented.*
+If the application starts a local Flask server, open the URL shown in your terminal.
 
 ## 🚀 Future Enhancements
 
-- Improve detection accuracy in different lighting conditions.
+- Improve detection accuracy in varying lighting conditions.
 - Expand safety-equipment detection capabilities.
-- Improve alert delivery and event logging.
-- Enhance the dashboard with detection statistics.
-- Evaluate real-time monitoring and deployment options.
+- Improve alert handling and event logging.
+- Add detection statistics to the dashboard.
+- Explore real-time monitoring and deployment.
 
 ## 👥 Team
 
-**Team Code Crusaders**
+**Team Code Crusaders**  
 HackIndia Spark 2 – 2025
 
-Update this section with the names and roles of all team members.
+Add your teammates' names and roles here.
 
-## 🏆 Hackathon Project
+## 🏆 Hackathon
 
-Developed as part of **HackIndia Spark 2 – 2025**, this project explores the use of artificial intelligence and computer vision to support safety monitoring.
+Developed for **HackIndia Spark 2 – 2025**, this project explores the use of artificial intelligence and computer vision for safety monitoring.
 
 ## 🤝 Contributing
-
-Contributions and suggestions are welcome.
 
 1. Fork this repository.
 2. Create a feature branch.
@@ -177,10 +153,10 @@ Contributions and suggestions are welcome.
 
 ---
 
-\<div align="center">
+<div align="center">
 
 **Built with Python, AI, and teamwork. 💙**
 
 ⭐ If you find this project interesting, consider starring the repository!
 
-\</div>
+</div>
