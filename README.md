@@ -1,173 +1,186 @@
-# HackIndia-Spark-2-2025---Code-Crusaders
-<div align="center">
+# 🦺 Guardian Eyes — AI-Powered Safety Monitoring System
 
-![HackIndia](https://img.shields.io/badge/HackIndia-Spark%202%202025-blueviolet?style=for-the-badge)
-![Project Status](https://img.shields.io/badge/Status-Hackathon%20Project-blue?style=for-the-badge)
-![Repository](https://img.shields.io/badge/Repository-Public-success?style=for-the-badge)
+\<div align="center">
 
-**Innovating Today, Building Tomorrow! 💡**
 
-A hackathon project developed by **Team Code Crusaders** for HackIndia Spark 2 – 2025.
 
-</div>
+\
+
+
+**AI-powered safety monitoring using computer vision and object detection.**
+
+[View Repository](https://github.com/Eswari2225/HackIndia-Spark-2-2025---Code-Crusaders)
+
+\</div>
 
 ---
 
 ## 📌 About the Project
 
-**Code Crusaders** is our team participating in HackIndia Spark 2 – 2025. This repository contains our project implementation, source code, and development resources.
+**Guardian Eyes** is a computer vision project developed by Team Code Crusaders for HackIndia Spark 2 – 2025.
 
-Our goal is to use technology and creative problem-solving to develop a solution that addresses a real-world challenge.
-
-> 💡 **Our Idea:** Replace this section with a short description of your project's problem statement, proposed solution, and intended users.
+The project aims to support safety monitoring by using the YOLOv8 object detection model to analyze visual input and identify safety-related conditions. The application includes a Python backend, a web dashboard, and an alert module.
 
 ## 🎯 Problem Statement
 
-Describe the problem your project aims to solve.
+Monitoring safety compliance manually can be time-consuming and difficult in environments where protective equipment is required.
 
-- What is the real-world problem?
-- Who is affected by it?
-- Why is an effective solution needed?
+Guardian Eyes explores how computer vision can assist in detecting safety-related violations and help improve monitoring efficiency.
 
-## 💡 Our Solution
+## 💡 Proposed Solution
 
-Explain how your project addresses the problem and what makes your approach useful or different.
+The system combines object detection with a web-based interface to present detection results and support alerts for identified violations.
 
-**Key objectives:**
-- Provide a practical and accessible solution.
-- Use technology to improve efficiency and usability.
-- Build an application that can be improved and scaled in the future.
+## ✨ Key Features
 
-## ✨ Features
-
-Add the features implemented in your project:
-
-- 🚀 User-friendly interface
-- ⚙️ Core application functionality
-- 🔐 Secure and reliable data handling, if implemented
-- 📊 Useful insights or results, if applicable
-- 📱 Responsive design, if supported
+- 🤖 **AI-Based Detection:** Uses the YOLOv8 model for object detection.
+- 🦺 **Safety Monitoring:** Designed for safety-equipment monitoring, such as helmet detection, depending on the implemented model classes.
+- 🌐 **Web Dashboard:** Provides a browser-based interface using HTML templates.
+- 🚨 **Alert Module:** Includes Python alert functionality for safety-related events.
+- 🖼️ **Detection Outputs:** Includes sample output images showing project results.
+- ⚙️ **Python Backend:** Organizes application functionality through Python scripts.
 
 ## 🛠️ Tech Stack
 
-Update this list to match the technologies actually used in your project.
-
-- **Frontend:** HTML, CSS, JavaScript / React
-- **Backend:** Node.js / Python / Java
-- **Database:** MySQL / MongoDB
-- **AI/ML:** Python and relevant machine-learning libraries, if applicable
-- **Tools:** Git, GitHub, VS Code
+- **Programming Language:** Python
+- **Computer Vision:** YOLOv8, Ultralytics
+- **Web Framework:** Flask, if used by `app.py`
+- **Frontend:** HTML, JavaScript, JSON
+- **Model Weights:** `yolov8n.pt`
+- **Dependency Management:** pip and `requirements.txt`
 
 ## 📂 Project Structure
 
 ```text
 HackIndia-Spark-2-2025---Code-Crusaders/
-├── README.md
-├── frontend/
-├── backend/
-├── assets/
-└── docs/
+│
+├── templates/
+│   ├── dashboard.html
+│   ├── js.js
+│   └── json.json
+│
+├── GE output.png
+├── GE2output.png
+├── GE3.png
+│
+├── alert.py
+├── app.py
+├── sample.py
+├── requirements.txt
+├── yolov8n.pt
+└── README.md
 ```
 
-*Adjust the folder structure above to match your actual repository.*
+### 📄 File Descriptions
 
-## ⚙️ Getting Started
+| File                       | Description                         |
+| -------------------------- | ----------------------------------- |
+| `app.py`                   | Main Python application entry point |
+| `alert.py`                 | Alert-related functionality         |
+| `sample.py`                | Sample or testing script            |
+| `requirements.txt`         | Python dependencies                 |
+| `yolov8n.pt`               | YOLOv8 nano model weights           |
+| `templates/dashboard.html` | Dashboard interface                 |
+| `templates/js.js`          | JavaScript functionality            |
+| `templates/json.json`      | JSON data or configuration          |
+| `GE output.png`            | Sample project output               |
+| `GE2output.png`            | Additional output image             |
+| `GE3.png`                  | Additional project image            |
 
-### Prerequisites
+## ⚙️ Installation and Setup
 
-Install the tools and runtime required by your project.
-
-Examples:
-- Git
-- Node.js and npm, if using a Node.js application
-- Python, if using a Python application
-- Any required database or API credentials
-
-### Installation
-
-**1. Clone the repository**
+### 1. Clone the repository
 
 ```bash
 git clone https://github.com/Eswari2225/HackIndia-Spark-2-2025---Code-Crusaders.git
 ```
 
-**2. Navigate to the project directory**
+### 2. Navigate to the project directory
 
 ```bash
 cd HackIndia-Spark-2-2025---Code-Crusaders
 ```
 
-**3. Install dependencies**
-
-Follow the instructions for your project's actual technology stack. For example, if the project uses Node.js:
+### 3. Create a virtual environment
 
 ```bash
-npm install
+python -m venv venv
 ```
 
-**4. Run the application**
+Activate it:
 
-Use the appropriate development command for your project. For example:
+**Windows**
 
 ```bash
-npm run dev
+venv\Scripts\activate
 ```
 
-*The commands above are examples and may need to be changed to match your implementation.*
+**macOS / Linux**
 
-## 🖥️ Screenshots
-
-Add screenshots or a GIF demonstrating your application here.
-
-```md
-![Project Screenshot](assets/screenshot.png)
+```bash
+source venv/bin/activate
 ```
 
-## 👥 Team Code Crusaders
+### 4. Install dependencies
 
-| Name | Role |
-|---|---|
-| Eswari L R | Team Member |
-| Team Member 2 | Add role |
-| Team Member 3 | Add role |
-| Team Member 4 | Add role |
+```bash
+pip install -r requirements.txt
+```
 
-*Update the table with your actual teammates and responsibilities.*
+If the Ultralytics package is not included in your requirements, install it with:
 
-## 🏆 Hackathon
+```bash
+pip install ultralytics
+```
 
-**Event:** HackIndia Spark 2 – 2025  
-**Team:** Code Crusaders  
-**GitHub:** [View Repository](https://github.com/Eswari2225/HackIndia-Spark-2-2025---Code-Crusaders)
+### 5. Run the application
 
-This project represents our effort to collaborate, experiment with technology, and develop a solution during a hackathon.
+```bash
+python app.py
+```
 
-## 🔮 Future Improvements
+If `app.py` starts a Flask development server, open the local URL displayed in the terminal, commonly:
 
-- Improve existing features and user experience.
-- Add functionality based on user feedback.
-- Strengthen testing, reliability, and performance.
-- Explore additional integrations where useful.
+```text
+http://127.0.0.1:5000/
+```
+
+*The exact setup and launch commands depend on how the application is implemented.*
+
+## 🚀 Future Enhancements
+
+- Improve detection accuracy in different lighting conditions.
+- Expand safety-equipment detection capabilities.
+- Improve alert delivery and event logging.
+- Enhance the dashboard with detection statistics.
+- Evaluate real-time monitoring and deployment options.
+
+## 👥 Team
+
+**Team Code Crusaders**
+HackIndia Spark 2 – 2025
+
+Update this section with the names and roles of all team members.
+
+## 🏆 Hackathon Project
+
+Developed as part of **HackIndia Spark 2 – 2025**, this project explores the use of artificial intelligence and computer vision to support safety monitoring.
 
 ## 🤝 Contributing
 
-Suggestions and improvements are welcome.
+Contributions and suggestions are welcome.
 
-1. Fork the repository.
-2. Create a new branch.
-3. Make your changes.
-4. Submit a pull request.
-
-## 📄 License
-
-Add your chosen open-source license here if you intend to distribute the project under one.
+1. Fork this repository.
+2. Create a feature branch.
+3. Commit your changes.
+4. Open a pull request.
 
 ---
 
-<div align="center">
+\<div align="center">
 
-### ⭐ Thanks for visiting Code Crusaders!
+**Built with Python, AI, and teamwork. 💙**
 
-**Built with 💻, creativity, and teamwork.**
+⭐ If you find this project interesting, consider starring the repository!
 
-</div>
+\</div>
